@@ -4,7 +4,7 @@ import { Button } from "../Button/Button";
 
 type Props = {};
 
-export const Game: NextPage<Props> = () => {
+export const Game_Hex: NextPage<Props> = () => {
   const [color, setColor] = useState<string>();
   const [streak, setStreak] = useState(0);
   const [guessedCorrectly, setGuessedCorrectly] = useState<number>();
