@@ -6,17 +6,22 @@ type Props = {
   onClick?: MouseEventHandler<HTMLElement>;
   link?: string;
   type?: string;
+  className?: string;
 };
 
-export const Button: NextPage<Props> = ({ label, onClick, link, type }) => {
+export const Button: NextPage<Props> = ({
+  label,
+  onClick,
+  link,
+  type,
+  className,
+}) => {
   return (
     // conditionals for onclick and link
     <>
       {onClick && type && (
         <button
-          className="flex justify-center items-center text-lg border-2 border-solid border-white bg-transparent w-40 h-14
-     cursor-pointer select-none rounded transition ease-in-out duration-300
-     hover:text-black hover:bg-white hover:-translate-y-1 active:translate-y-0.5"
+          className={[className, "btn-primary"].join(" ")}
           onClick={onClick}
         >
           <p>{label}</p>
@@ -24,9 +29,7 @@ export const Button: NextPage<Props> = ({ label, onClick, link, type }) => {
       )}
       {onClick && (
         <button
-          className="flex justify-center items-center text-lg border-2 border-solid border-white bg-transparent w-40 h-14
-       cursor-pointer select-none rounded transition ease-in-out duration-300
-       hover:text-black hover:bg-white hover:-translate-y-1 active:translate-y-0.5"
+          className={[className, "btn-primary"].join(" ")}
           onClick={onClick}
         >
           <p>{label}</p>
