@@ -21,7 +21,7 @@ export const Button: NextPage<Props> = ({
     <>
       {onClick && type && (
         <button
-          className={[className, "btn-primary"].join(" ")}
+          className={["btn-primary-light", className].join(" ")}
           onClick={onClick}
         >
           <p>{label}</p>
@@ -29,7 +29,7 @@ export const Button: NextPage<Props> = ({
       )}
       {onClick && (
         <button
-          className={[className, "btn-primary"].join(" ")}
+          className={["btn-primary-light", className].join(" ")}
           onClick={onClick}
         >
           <p>{label}</p>
