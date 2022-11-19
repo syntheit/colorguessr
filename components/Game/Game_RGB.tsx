@@ -69,7 +69,9 @@ export const Game_RGB: NextPage<Props> = () => {
   const [error, setError] = useState<string>();
   const [marginOfError, setMarginOfError] = useState(-1); // percent error
   const [difficultyName, setDifficultyName] = useState<string>();
-  const [useWhiteText, setUseWhiteText] = useState(true);
+  const [useLight, setUseLight] = useState(true);
+  const [totalAccuracy, setTotalAccuracy] = useState(0);
+
   const guess_r = useRef<HTMLInputElement>(null);
   const guess_g = useRef<HTMLInputElement>(null);
   const guess_b = useRef<HTMLInputElement>(null);
@@ -79,17 +81,16 @@ export const Game_RGB: NextPage<Props> = () => {
   });
 
   const setRandomColor = () => {
+    if (streak === 0) setPreviousStreak(0);
     setGuessedCorrectly(-1);
     const c = new Color();
     setColor(c);
     c.r * 0.299 + c.g * 0.587 + c.b * 0.114 < 150
-      ? setUseWhiteText(true)
-      : setUseWhiteText(false);
+      ? setUseLight(true)
+      : setUseLight(false);
   };
 
-  const submitGuess = (event?: FormEvent<HTMLFormElement>) => {
-    // add checks to make sure that it is a valid rgb value
-    event && event.preventDefault();
+  const checkIfGuessIsValid = () => {
     if (
       !guess_r.current?.value ??
       !guess_g.current?.value ??
@@ -98,6 +99,13 @@ export const Game_RGB: NextPage<Props> = () => {
       setError("Enter a valid RGB value");
       return;
     }
+    return true;
+  };
+
+  const submitGuess = (event?: FormEvent<HTMLFormElement>) => {
+    // add checks to make sure that it is a valid rgb value
+    event && event.preventDefault();
+    if (!checkIfGuessIsValid()) return;
     if (!color) {
       setError("Problem with color generation");
       return;
@@ -112,7 +120,7 @@ export const Game_RGB: NextPage<Props> = () => {
       return;
     }
     const errorPercentage = color.equalsWithinError(guessed_color);
-    if (errorPercentage < 50) {
+    if (errorPercentage <= marginOfError) {
       setGuessedCorrectly(1);
       setPreviousStreak(streak + 1);
       setStreak((currentStreak) => currentStreak + 1);
@@ -121,6 +129,7 @@ export const Game_RGB: NextPage<Props> = () => {
       setStreak(0);
     }
     setPercentError(Math.round(errorPercentage));
+    setTotalAccuracy((currentSum) => currentSum + errorPercentage);
   };
 
   const getGuessedColor = () => {
@@ -150,9 +159,9 @@ export const Game_RGB: NextPage<Props> = () => {
               className="mr-3 ml-3 mb-6"
             />
             <Button
-              label="Challenging"
+              label="Medium"
               onClick={() => {
-                setMarginOfError(difficulties.challenging);
+                setMarginOfError(difficulties.medium);
                 setDifficultyName("Challenging");
               }}
               className="mr-3 ml-3 mb-6"
@@ -180,7 +189,7 @@ export const Game_RGB: NextPage<Props> = () => {
           className={"flex items-center justify-center flex-col h-full w-full "}
           style={{
             backgroundColor: `rgb(${color?.r}, ${color?.g}, ${color?.b})`,
-            color: useWhiteText ? "#fff" : "#111",
+            color: useLight ? "#fff" : "#111827",
           }}
         >
           {guessedCorrectly == -1 && (
@@ -193,25 +202,37 @@ export const Game_RGB: NextPage<Props> = () => {
                 onSubmit={(e) => submitGuess(e)}
               >
                 <input
-                  type="text"
+                  type="number"
                   placeholder="R"
-                  className="text-black text-2xl font-medium m-3 p-2 rounded-md w-20"
+                  min="0"
+                  max="255"
+                  className="input-primary"
                   ref={guess_r}
                   autoFocus
                 />
                 <input
-                  type="text"
+                  type="number"
                   placeholder="G"
-                  className="text-black text-2xl font-medium m-3 p-2 rounded-md w-20"
+                  min="0"
+                  max="255"
+                  className="input-primary"
                   ref={guess_g}
                 />
                 <input
-                  type="text"
+                  type="number"
                   placeholder="B"
-                  className="text-black text-2xl font-medium m-3 p-2 rounded-md w-20"
+                  min="0"
+                  max="255"
+                  className="input-primary"
                   ref={guess_b}
                 />
-                <Button label="Guess" onClick={() => submitGuess} />
+                <Button
+                  label="Guess"
+                  onClick={() => submitGuess}
+                  className={
+                    useLight ? "btn-primary-light" : "btn-primary-dark"
+                  }
+                />
               </form>
             </>
           )}
@@ -219,13 +240,13 @@ export const Game_RGB: NextPage<Props> = () => {
             <div className="flex flex-col items-center mb-3">
               <h2 className="text-5xl font-bold mb-5">Correct!</h2>
               <h3 className="text-2xl mb-3">
-                You were off by{" "}
+                You were off by&nbsp;
                 <span className="font-bold">{percentError}%</span>
               </h3>
               <h3 className="text-2xl mb-3">
-                The color was{" "}
+                The color was&nbsp;
                 <span className="font-bold">{color?.toString()}</span>
-              </h3>{" "}
+              </h3>
               <h3 className="text-2xl mb-3">
                 You guessed&nbsp;
                 <span className="font-bold">
@@ -238,11 +259,11 @@ export const Game_RGB: NextPage<Props> = () => {
             <div className="flex flex-col items-center mb-3">
               <h2 className="text-5xl font-bold mb-5">Wrong!</h2>
               <h3 className="text-2xl mb-3">
-                You were off by{" "}
+                You were off by&nbsp;
                 <span className="font-bold">{percentError}%</span>
               </h3>
               <h3 className="text-2xl mb-3">
-                The color was{" "}
+                The color was&nbsp;
                 <span className="font-bold">{color?.toString()}</span>
               </h3>
               <h3 className="text-2xl mb-3">
@@ -252,15 +273,28 @@ export const Game_RGB: NextPage<Props> = () => {
                 </span>
               </h3>
               {previousStreak > 0 && (
-                <h3 className="text-2xl mb-3">
-                  You lost your streak of {previousStreak}
-                </h3>
+                <>
+                  <h3 className="text-2xl mb-3">
+                    You lost your streak of&nbsp;
+                    <span className="font-bold">{previousStreak}</span>
+                  </h3>
+                  <h3 className="text-2xl mb-3">
+                    Average inaccuracy:&nbsp;
+                    <span className="font-bold">
+                      {Math.round(totalAccuracy / previousStreak + 1)}%
+                    </span>
+                  </h3>
+                </>
               )}
             </div>
           )}
           {error && <h3 className="text-2xl font-bold">{error}</h3>}
           {guessedCorrectly !== -1 && (
-            <Button label="Next Color" onClick={setRandomColor} />
+            <Button
+              label="Next Color"
+              onClick={setRandomColor}
+              className={useLight ? "btn-primary-light" : "btn-primary-dark"}
+            />
           )}
           <div className="absolute bottom-20 flex flex-col items-center">
             <h2 className="text-3xl font-bold">Streak: {streak}</h2>
