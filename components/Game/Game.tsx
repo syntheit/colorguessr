@@ -308,7 +308,6 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
               label="Next Color"
               onClick={setRandomColor}
               className={useLight ? "btn-primary-light" : "btn-primary-dark"}
-              type="submit"
             />
           )}
           <div className="absolute bottom-20 flex flex-col items-center">
