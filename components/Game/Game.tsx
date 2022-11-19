@@ -32,8 +32,22 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
     guess_hex = useRef<HTMLInputElement>(null);
 
   useLayoutEffect(() => {
-    !color && setRandomColor();
-    !mode && setMode(selected_mode);
+    setRandomColor();
+    setMode(selected_mode);
+  }, []);
+
+  useLayoutEffect(() => {
+    const keyDownHandler = (event: {
+      key: string;
+      preventDefault: () => void;
+    }) => {
+      if (event.key === "Enter" && guessedCorrectly !== -1) {
+        event.preventDefault();
+        setRandomColor();
+      }
+    };
+    document.addEventListener("keydown", keyDownHandler);
+    return () => document.removeEventListener("keydown", keyDownHandler);
   });
 
   const setRandomColor = () => {
@@ -46,6 +60,7 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
       : setUseLight(false);
   };
 
+  // make sure it is a valid hex, and not just a bunch of random characters
   const checkIfGuessIsValid = () => {
     if (
       mode === "RGB" &&
@@ -293,6 +308,7 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
               label="Next Color"
               onClick={setRandomColor}
               className={useLight ? "btn-primary-light" : "btn-primary-dark"}
+              type="submit"
             />
           )}
           <div className="absolute bottom-20 flex flex-col items-center">
