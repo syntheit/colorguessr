@@ -5,7 +5,6 @@ type Props = {
   label: string;
   onClick?: MouseEventHandler<HTMLElement>;
   link?: string;
-  type?: string;
   className?: string;
 };
 
@@ -13,20 +12,12 @@ export const Button: NextPage<Props> = ({
   label,
   onClick,
   link,
-  type,
   className,
 }) => {
   return (
     // conditionals for onclick and link
     <>
-      {onClick && type && (
-        <button
-          className={["btn-primary-light", className].join(" ")}
-          onClick={onClick}
-        >
-          <p>{label}</p>
-        </button>
-      )}
+      {/* fix conditionals and utilize all props */}
       {onClick && (
         <button
           className={["btn-primary-light", className].join(" ")}
@@ -34,7 +25,7 @@ export const Button: NextPage<Props> = ({
         >
           <p>{label}</p>
         </button>
-      )}{" "}
+      )}
     </>
   );
 };
