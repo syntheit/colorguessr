@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../components/Button/Button";
 import { Game_Hex } from "../components/Game/Game_Hex";
@@ -13,17 +14,16 @@ const Home: NextPage<Props> = () => {
   // use zustand to manage game states
 
   return (
-    <div className="flex items-center justify-center h-full bg-black">
+    <div className="flex items-center justify-center h-full gradientAnimation">
       {selectedHex && <Game_Hex />}
       {selectedRGB && <Game_RGB />}
       {!selectedHex && !selectedRGB && (
-        <div className="flex items-center flex-col text-white">
+        <div className="flex items-center flex-col text-white bg-black/60 p-16 rounded-lg">
           <h1 className="text-5xl font-bold mb-3">ColorGuessr</h1>
           <p className="text-2xl mb-8">
             Can you the guess hex/rgb of a color just by seeing it?
           </p>
-          {/* buttons for hex, rgb, etc */}
-          <div className="flex">
+          <div className="flex mb-12">
             <Button
               label="Guess the hex"
               onClick={() => setSelectedHex(true)}
@@ -34,7 +34,15 @@ const Home: NextPage<Props> = () => {
               onClick={() => setSelectedRGB(true)}
               className="ml-4"
             />
-          </div>{" "}
+          </div>
+          <Link href="https://www.github.com/syntheit/colorguessr">
+            <svg className="w-14 h-14 text-white hoverOpacity mb-4">
+              <use href={`/icons/github.svg#github`} />
+            </svg>
+          </Link>
+          <Link href="https://www.matv.io">
+            <h4 className="text-lg hoverOpacity">Made by Daniel Miller</h4>
+          </Link>
         </div>
       )}
     </div>
