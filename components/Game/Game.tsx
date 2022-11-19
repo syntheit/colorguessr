@@ -1,83 +1,39 @@
 import { NextPage } from "next";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "../Button/Button";
 import { difficulties } from "../../constants/rgb_difficulties";
+import { Color } from "../../constants/Color";
+import {
+  modeDisplayNames,
+  modeDisplayNamesType,
+} from "../../constants/modeDisplayNames";
 
-type Props = {};
-
-class Color {
-  r: number;
-  g: number;
-  b: number;
-
-  public constructor();
-
-  public constructor(x: number);
-
-  public constructor({ r, g, b }: { r: number; g: number; b: number });
-
-  public constructor(...args: any[]) {
-    if (args.length === 0) {
-      this.r = this.randomColorVal();
-      this.g = this.randomColorVal();
-      this.b = this.randomColorVal();
-    } else if (args.length === 1 && args[0] === -1) {
-      this.r = this.g = this.b = -1;
-    } else if (args.length === 1) {
-      const { r, g, b } = args[0];
-      this.r = r;
-      this.g = g;
-      this.b = b;
-    } else this.r = this.g = this.b = -1;
-  }
-
-  randomColorVal = () => {
-    return Math.floor(Math.random() * 255);
-  };
-
-  toString = () => {
-    return `(${this.r}, ${this.g}, ${this.b})`;
-  };
-
-  getRGBString = () => {
-    return `rgb${toString}`;
-  };
-
-  percentDiff = (a: number, b: number) => {
-    return 100 * Math.abs((a - b) / ((a + b) / 2));
-  };
-
-  equalsWithinError = (c: Color) => {
-    const r_diff = this.percentDiff(this.r, c.r);
-    const g_diff = this.percentDiff(this.g, c.g);
-    const b_diff = this.percentDiff(this.b, c.b);
-    // NaN when 0??
-
-    const avg = (r_diff + g_diff + b_diff) / 3;
-    return avg;
-  };
-}
+type Props = {
+  selected_mode: string;
+};
 
 // add multiple choice
 
-export const Game_RGB: NextPage<Props> = () => {
-  const [color, setColor] = useState<Color>();
-  const [streak, setStreak] = useState(0);
-  const [previousStreak, setPreviousStreak] = useState(0);
-  const [guessedCorrectly, setGuessedCorrectly] = useState<number>();
-  const [percentError, setPercentError] = useState<number>();
-  const [error, setError] = useState<string>();
-  const [marginOfError, setMarginOfError] = useState(-1); // percent error
-  const [difficultyName, setDifficultyName] = useState<string>();
-  const [useLight, setUseLight] = useState(true);
-  const [totalAccuracy, setTotalAccuracy] = useState(0);
+export const Game: NextPage<Props> = ({ selected_mode }) => {
+  const [color, setColor] = useState<Color>(),
+    [streak, setStreak] = useState(0),
+    [previousStreak, setPreviousStreak] = useState(0),
+    [guessedCorrectly, setGuessedCorrectly] = useState<number>(),
+    [percentError, setPercentError] = useState<number>(),
+    [error, setError] = useState<string>(),
+    [marginOfError, setMarginOfError] = useState(-1), // percent error
+    [difficultyName, setDifficultyName] = useState<string>(),
+    [useLight, setUseLight] = useState(true),
+    [totalAccuracy, setTotalAccuracy] = useState(0),
+    [mode, setMode] = useState(""),
+    guess_r = useRef<HTMLInputElement>(null),
+    guess_g = useRef<HTMLInputElement>(null),
+    guess_b = useRef<HTMLInputElement>(null),
+    guess_hex = useRef<HTMLInputElement>(null);
 
-  const guess_r = useRef<HTMLInputElement>(null);
-  const guess_g = useRef<HTMLInputElement>(null);
-  const guess_b = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     !color && setRandomColor();
+    !mode && setMode(selected_mode);
   });
 
   const setRandomColor = () => {
@@ -92,11 +48,18 @@ export const Game_RGB: NextPage<Props> = () => {
 
   const checkIfGuessIsValid = () => {
     if (
-      !guess_r.current?.value ??
-      !guess_g.current?.value ??
-      !guess_b.current?.value
+      mode === "RGB" &&
+      (!guess_r.current?.value ||
+        !guess_g.current?.value ||
+        !guess_b.current?.value)
     ) {
       setError("Enter a valid RGB value");
+      return;
+    } else if (
+      mode === "hex" &&
+      (!guess_hex.current?.value || guess_hex.current.value.length !== 7)
+    ) {
+      setError("Enter a valid hex value");
       return;
     }
     return true;
@@ -104,7 +67,7 @@ export const Game_RGB: NextPage<Props> = () => {
 
   const submitGuess = (event?: FormEvent<HTMLFormElement>) => {
     // add checks to make sure that it is a valid rgb value
-    event && event.preventDefault();
+    event?.preventDefault();
     if (!checkIfGuessIsValid()) return;
     if (!color) {
       setError("Problem with color generation");
@@ -133,15 +96,21 @@ export const Game_RGB: NextPage<Props> = () => {
   };
 
   const getGuessedColor = () => {
-    return !guess_r.current?.value ||
-      !guess_g.current?.value ||
-      !guess_b.current?.value
-      ? undefined
-      : new Color({
-          r: +guess_r.current.value,
-          g: +guess_g.current.value,
-          b: +guess_b.current.value,
-        });
+    if (mode === "RGB")
+      return !guess_r.current?.value ||
+        !guess_g.current?.value ||
+        !guess_b.current?.value
+        ? undefined
+        : new Color({
+            r: +guess_r.current.value,
+            g: +guess_g.current.value,
+            b: +guess_b.current.value,
+          });
+    else if (mode === "hex")
+      return !guess_hex.current?.value || guess_hex.current.value.length !== 7
+        ? undefined
+        : new Color(Color.hexToRGB(guess_hex.current.value));
+    return undefined;
   };
 
   return (
@@ -194,46 +163,72 @@ export const Game_RGB: NextPage<Props> = () => {
         >
           {guessedCorrectly == -1 && (
             <>
-              <h1 className="text-4xl font-bold mb-5">
-                What is the RGB value?
+              <h1 className="text-4xl font-bold mb-5 text-center">
+                What is the {mode} value?
               </h1>
-              <form
-                className="flex items-center justify-center mb-3 flex-wrap"
-                onSubmit={(e) => submitGuess(e)}
-              >
-                <input
-                  type="number"
-                  placeholder="R"
-                  min="0"
-                  max="255"
-                  className="input-primary"
-                  ref={guess_r}
-                  autoFocus
-                />
-                <input
-                  type="number"
-                  placeholder="G"
-                  min="0"
-                  max="255"
-                  className="input-primary"
-                  ref={guess_g}
-                />
-                <input
-                  type="number"
-                  placeholder="B"
-                  min="0"
-                  max="255"
-                  className="input-primary"
-                  ref={guess_b}
-                />
-                <Button
-                  label="Guess"
-                  onClick={() => submitGuess}
-                  className={
-                    useLight ? "btn-primary-light" : "btn-primary-dark"
-                  }
-                />
-              </form>
+              {mode === "RGB" && (
+                <form
+                  className="flex items-center justify-center mb-3 flex-wrap"
+                  onSubmit={(e) => submitGuess(e)}
+                >
+                  <input
+                    type="number"
+                    placeholder="R"
+                    min="0"
+                    max="255"
+                    className="input-primary"
+                    ref={guess_r}
+                    autoFocus
+                  />
+                  <input
+                    type="number"
+                    placeholder="G"
+                    min="0"
+                    max="255"
+                    className="input-primary"
+                    ref={guess_g}
+                  />
+                  <input
+                    type="number"
+                    placeholder="B"
+                    min="0"
+                    max="255"
+                    className="input-primary"
+                    ref={guess_b}
+                  />
+                  <Button
+                    label="Guess"
+                    onClick={() => submitGuess}
+                    className={`${
+                      useLight ? "btn-primary-light" : "btn-primary-dark"
+                    } mt-3 sm:mt-0`}
+                  />
+                </form>
+              )}
+              {mode === "hex" && (
+                <form
+                  className="flex items-center justify-center mb-3 flex-wrap"
+                  onSubmit={(e) => submitGuess(e)}
+                >
+                  <input
+                    type="text"
+                    placeholder="#"
+                    defaultValue="#"
+                    className="input-primary w-40"
+                    maxLength={7}
+                    pattern="[a-zA-Z0-9#]+"
+                    ref={guess_hex}
+                    autoFocus
+                  />
+                  <Button
+                    label="Guess"
+                    onClick={() => submitGuess}
+                    className={`${
+                      useLight ? "btn-primary-light" : "btn-primary-dark"
+                    } mt-3 sm:mt-0`}
+                  />
+                </form>
+              )}
             </>
           )}
           {guessedCorrectly == 1 && (
@@ -245,12 +240,12 @@ export const Game_RGB: NextPage<Props> = () => {
               </h3>
               <h3 className="text-2xl mb-3">
                 The color was&nbsp;
-                <span className="font-bold">{color?.toString()}</span>
+                <span className="font-bold">{color?.toRGBString()}</span>
               </h3>
               <h3 className="text-2xl mb-3">
                 You guessed&nbsp;
                 <span className="font-bold">
-                  {getGuessedColor()?.toString()}
+                  {getGuessedColor()?.toRGBString()}
                 </span>
               </h3>
             </div>
@@ -264,12 +259,16 @@ export const Game_RGB: NextPage<Props> = () => {
               </h3>
               <h3 className="text-2xl mb-3">
                 The color was&nbsp;
-                <span className="font-bold">{color?.toString()}</span>
+                <span className="font-bold">
+                  {mode === "RGB" && color?.toRGBString()}
+                  {mode === "hex" && color?.toHexString()}
+                </span>
               </h3>
               <h3 className="text-2xl mb-3">
                 You guessed&nbsp;
                 <span className="font-bold">
-                  {getGuessedColor()?.toString()}
+                  {mode === "RGB" && getGuessedColor()?.toRGBString()}
+                  {mode === "hex" && getGuessedColor()?.toHexString()}
                 </span>
               </h3>
               {previousStreak > 0 && (
@@ -297,8 +296,11 @@ export const Game_RGB: NextPage<Props> = () => {
             />
           )}
           <div className="absolute bottom-20 flex flex-col items-center">
-            <h2 className="text-3xl font-bold">Streak: {streak}</h2>
-            <h2 className="text-2xl">Difficulty: {difficultyName}</h2>
+            <h2 className="text-3xl font-bold mb-1">Streak: {streak}</h2>
+            <h2 className="text-2xl mb-1">Difficulty: {difficultyName}</h2>
+            <h4 className="text-xl font-light">
+              Mode: {modeDisplayNames[mode as keyof modeDisplayNamesType]}
+            </h4>
           </div>
         </div>
       )}
