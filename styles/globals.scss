@@ -34,7 +34,75 @@ html,
 }
 
 @layer components {
-  .btn-primary {
-    @apply flex justify-center items-center text-lg border-2 border-solid border-white bg-transparent w-40 h-14 cursor-pointer select-none rounded transition ease-in-out duration-300 hover:text-black hover:bg-white hover:-translate-y-1 active:translate-y-0.5;
+  .btn-primary-light {
+    @apply flex justify-center items-center text-lg border-2 border-solid text-white border-white bg-transparent w-40 h-14 cursor-pointer select-none rounded transition ease-in-out duration-300 hover:text-gray-900 hover:bg-white hover:-translate-y-1 active:translate-y-0.5;
+  }
+
+  .btn-primary-dark {
+    @apply flex justify-center items-center text-lg border-2 border-solid text-gray-900 border-gray-900 bg-transparent w-40 h-14 cursor-pointer select-none rounded transition ease-in-out duration-300 hover:text-white hover:bg-gray-900 hover:-translate-y-1 active:translate-y-0.5;
+  }
+
+  .input-primary {
+    @apply text-gray-900 placeholder:text-gray-600 text-2xl font-medium m-3 p-2 rounded-md w-20 h-14 bg-white/50;
+  }
+
+  .gradientAnimation {
+    background: radial-gradient(
+      #dc2626,
+      #facc15,
+      #16a34a,
+      #ea580c,
+      #c026d3,
+      #2563eb,
+      #9333ea
+    );
+    background-size: 1200% 1200%;
+    animation: Gradient_Animation 50s ease infinite;
+  }
+  
+  @-webkit-keyframes Gradient_Animation {
+    0% {
+      background-position: 90% 0%;
+    }
+    50% {
+      background-position: 11% 100%;
+    }
+    100% {
+      background-position: 90% 0%;
+    }
+  }
+
+  @-moz-keyframes Gradient_Animation {
+    0% {
+      background-position: 90% 0%;
+    }
+    50% {
+      background-position: 11% 100%;
+    }
+    100% {
+      background-position: 90% 0%;
+    }
+  }
+  
+  @keyframes Gradient_Animation {
+    0% {
+      background-position: 90% 0%;
+    }
+    50% {
+      background-position: 11% 100%;
+    }
+    100% {
+      background-position: 90% 0%;
+    }
+  }
+
+  .hoverOpacity {
+    &:hover {
+      opacity: 0.65;
+    }
+    &:active {
+      opacity: 0.5;
+    }
+    transition: all 0.3s;
   }
 }
