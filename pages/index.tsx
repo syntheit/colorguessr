@@ -2,37 +2,34 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../components/Button/Button";
-import { Game_Hex } from "../components/Game/Game_Hex";
-import { Game_RGB } from "../components/Game/Game_RGB";
+import { Game } from "../components/Game/Game";
 
 type Props = {};
 
 const Home: NextPage<Props> = () => {
-  const [selectedHex, setSelectedHex] = useState(false);
-  const [selectedRGB, setSelectedRGB] = useState(false);
+  const [selectedMode, setSelectedMode] = useState<string>();
 
   // use zustand to manage game states
 
   return (
     <div className="flex items-center justify-center h-full gradientAnimation">
-      {selectedHex && <Game_Hex />}
-      {selectedRGB && <Game_RGB />}
-      {!selectedHex && !selectedRGB && (
-        <div className="flex items-center flex-col text-white bg-black/60 p-16 rounded-lg">
-          <h1 className="text-5xl font-bold mb-3">ColorGuessr</h1>
-          <p className="text-2xl mb-8">
-            Can you the guess hex/rgb of a color just by seeing it?
+      {selectedMode && <Game selected_mode={selectedMode} />}
+      {!selectedMode && (
+        <div className="flex items-center flex-col text-white bg-black/60 p-10 md:p-16 rounded-lg mx-10">
+          <h1 className="text-fluid-lg font-bold mb-3">ColorGuessr</h1>
+          <p className="text-2xl mb-8 text-center w-10/12">
+            Can you the guess hex/rgb of a color just by looking at it?
           </p>
-          <div className="flex mb-12">
+          <div className="flex flex-wrap items-center justify-center mb-12">
             <Button
               label="Guess the hex"
-              onClick={() => setSelectedHex(true)}
-              className="mr-4"
+              onClick={() => setSelectedMode("hex")}
+              className="m-4"
             />
             <Button
               label="Guess the RGB"
-              onClick={() => setSelectedRGB(true)}
-              className="ml-4"
+              onClick={() => setSelectedMode("RGB")}
+              className="m-4"
             />
           </div>
           <Link href="https://www.github.com/syntheit/colorguessr">
