@@ -53,6 +53,7 @@ export class Color {
     return `(${this.r}, ${this.g}, ${this.b})`;
   };
 
+  // if there's 00, it only returns one zero
   public toHexString = () => {
     return (
       "#" + this.r.toString(16) + this.g.toString(16) + this.b.toString(16)
