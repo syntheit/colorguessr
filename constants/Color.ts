@@ -41,22 +41,37 @@ export class Color {
     return { r: +r, g: +g, b: +b };
   };
 
-  private randomColorVal = () => {
-    return Math.floor(Math.random() * 255);
+  public static applyOpacity = (c: Color, opacity: number) => {
+    const r = opacity * c.r + (1 - opacity),
+      g = opacity * c.g + (1 - opacity),
+      b = opacity * c.b + (1 - opacity);
+    return new Color({ r, g, b });
   };
 
-  private percentDiff = (a: number, b: number) => {
-    return 100 * Math.abs((a - b) / ((a + b) / 2));
+  public static useLight = (c: Color) => {
+    return c.r * 0.299 + c.g * 0.587 + c.b * 0.114 < 150 ? true : false;
+  };
+
+  private randomColorVal = () => {
+    return Math.floor(Math.random() * 255);
   };
 
   public toRGBString = () => {
     return `(${this.r}, ${this.g}, ${this.b})`;
   };
 
+  private componentToHex = (c: number) => {
+    const hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  };
+
   // if there's 00, it only returns one zero
   public toHexString = () => {
     return (
-      "#" + this.r.toString(16) + this.g.toString(16) + this.b.toString(16)
+      "#" +
+      this.componentToHex(this.r) +
+      this.componentToHex(this.g) +
+      this.componentToHex(this.b)
     );
   };
 
