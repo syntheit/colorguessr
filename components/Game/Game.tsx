@@ -59,9 +59,7 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
     const c = new Color();
     setColor(c);
     const useLightUI = Color.useLight(c);
-    const useLightCard = Color.useLight(
-      Color.applyOpacity(c, useLightUI ? 0.2 : 0.6)
-    );
+    const useLightCard = Color.useLight(Color.applyOpacity(c, 0.6));
     setUseLight({ ui: useLightUI, card: useLightCard });
   };
 
@@ -209,8 +207,9 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
           {guessedCorrectly == -1 && (
             <div
               style={{
-                color: useLight.ui ? "#fff" : "#111827",
+                color: useLight.card ? "#fff" : "#111827",
               }}
+              className={`bg-black/60 p-10 md:p-16 rounded-lg`}
             >
               <h1 className="text-4xl font-bold mb-5 text-center">
                 What is the {mode} value?
@@ -249,7 +248,7 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
                     label="Guess"
                     onClick={() => submitGuess}
                     className={`${
-                      useLight.ui ? "btn-primary-light" : "btn-primary-dark"
+                      useLight.card ? "btn-primary-light" : "btn-primary-dark"
                     } mt-3 sm:mt-0`}
                   />
                 </form>
@@ -273,10 +272,13 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
                     label="Guess"
                     onClick={() => submitGuess}
                     className={`${
-                      useLight.ui ? "btn-primary-light" : "btn-primary-dark"
+                      useLight.card ? "btn-primary-light" : "btn-primary-dark"
                     } mt-3 sm:mt-0`}
                   />
                 </form>
+              )}
+              {error && (
+                <h3 className="text-2xl font-bold text-center">{error}</h3>
               )}
             </div>
           )}
@@ -334,7 +336,6 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
               />
             </div>
           )}
-          {error && <h3 className="text-2xl font-bold">{error}</h3>}
           <div
             className="absolute bottom-10 flex flex-col items-center"
             style={{
