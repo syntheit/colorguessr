@@ -46,6 +46,12 @@ html,
     @apply text-gray-900 placeholder:text-gray-600 text-2xl font-medium m-3 p-2 rounded-md w-20 h-14 bg-white/50;
   }
 
+  .input-primary::-webkit-outer-spin-button,
+  .input-primary::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
   .gradientAnimation {
     background: radial-gradient(
       #dc2626,
@@ -59,7 +65,7 @@ html,
     background-size: 1200% 1200%;
     animation: Gradient_Animation 50s ease infinite;
   }
-  
+
   @-webkit-keyframes Gradient_Animation {
     0% {
       background-position: 90% 0%;
@@ -83,7 +89,7 @@ html,
       background-position: 90% 0%;
     }
   }
-  
+
   @keyframes Gradient_Animation {
     0% {
       background-position: 90% 0%;
