@@ -5,11 +5,12 @@ import { Button } from "../components/Button/Button";
 import { Game } from "../components/Game/Game";
 import { NextSeo } from "next-seo";
 import { index } from "../constants/metadata";
+import { mode } from "../constants/types";
 
 type Props = {};
 
 const Home: NextPage<Props> = () => {
-  const [selectedMode, setSelectedMode] = useState<"hex" | "RGB">();
+  const [selectedMode, setSelectedMode] = useState<mode>();
 
   return (
     <div className="flex items-center justify-center h-full gradientAnimation">
