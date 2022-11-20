@@ -7,9 +7,10 @@ import {
   modeDisplayNames,
   modeDisplayNamesType,
 } from "../../constants/modeDisplayNames";
+import { ColorCard } from "../ColorCard/ColorCard";
 
 type Props = {
-  selected_mode: string;
+  selected_mode: "hex" | "RGB";
 };
 
 // add multiple choice
@@ -26,7 +27,7 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
     [difficultyName, setDifficultyName] = useState<string>(),
     [useLight, setUseLight] = useState(true),
     [totalInaccuracy, setTotalInaccuracy] = useState(0),
-    [mode, setMode] = useState(""),
+    [mode, setMode] = useState<"hex" | "RGB">(),
     guess_r = useRef<HTMLInputElement>(null),
     guess_g = useRef<HTMLInputElement>(null),
     guess_b = useRef<HTMLInputElement>(null),
@@ -129,6 +130,14 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
         ? undefined
         : new Color(Color.hexToRGB(guess_hex.current.value));
     return undefined;
+  };
+
+  const renderGuessedColor = () => {
+    const guessedColor = getGuessedColor();
+    return (
+      guessedColor &&
+      mode && <ColorCard color={guessedColor} type={mode} className="ml-3" />
+    );
   };
 
   return (
@@ -283,6 +292,12 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
                   {mode === "hex" && getGuessedColor()?.toHexString()}
                 </span>
               </h3>
+              <div className="flex my-4">
+                {color && mode && (
+                  <ColorCard color={color} type={mode} className="mr-3" />
+                )}
+                {renderGuessedColor()}
+              </div>
               {guessedCorrectly === 0 && previousStreak > 0 && (
                 <>
                   <h3 className="text-2xl mb-3">
