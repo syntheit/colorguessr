@@ -32,9 +32,6 @@ export class Color {
     if (g.length == 1) g = "0" + g;
     if (b.length == 1) b = "0" + b;
     return "#" + r + g + b;
-    // return (
-    // "#" + this.r.toString(16) + this.g.toString(16) + this.b.toString(16)
-    //   );
   };
 
   public static hexToRGB = (h: string) => {
@@ -42,7 +39,6 @@ export class Color {
       g = "0x" + h[3] + h[4],
       b = "0x" + h[5] + h[6];
     return { r: +r, g: +g, b: +b };
-    // return "rgb(" + +r + "," + +g + "," + +b + ")";
   };
 
   private randomColorVal = () => {
@@ -63,13 +59,14 @@ export class Color {
     );
   };
 
-  public equalsWithinError = (c: Color) => {
+  public percentDifference = (c: Color) => {
     // NaN when 0??
     return (
-      (this.percentDiff(this.r, c.r) +
-        this.percentDiff(this.g, c.g) +
-        this.percentDiff(this.b, c.b)) /
-      3
+      ((Math.abs(this.r - c.r) / 256 +
+        Math.abs(this.g - c.g) / 256 +
+        Math.abs(this.b - c.b) / 256) /
+        3) *
+      100
     );
   };
 }
