@@ -3,16 +3,17 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../components/Button/Button";
 import { Game } from "../components/Game/Game";
+import { NextSeo } from "next-seo";
+import { index } from "../constants/metadata";
 
 type Props = {};
 
 const Home: NextPage<Props> = () => {
   const [selectedMode, setSelectedMode] = useState<string>();
 
-  // use zustand to manage game states
-
   return (
     <div className="flex items-center justify-center h-full gradientAnimation">
+      <NextSeo {...index} />
       {selectedMode && <Game selected_mode={selectedMode} />}
       {!selectedMode && (
         <div className="flex items-center flex-col text-white bg-black/60 p-10 md:p-16 rounded-lg mx-10">
