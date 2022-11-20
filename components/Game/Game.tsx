@@ -8,16 +8,17 @@ import {
   modeDisplayNamesType,
 } from "../../constants/modeDisplayNames";
 import { ColorCard } from "../ColorCard/ColorCard";
+import { mode } from "../../constants/types";
 
 type Props = {
-  selected_mode: "hex" | "RGB";
+  selected_mode: mode;
 };
 
 // add multiple choice
 // diagonal practice round where you can live guess the colors
 
 export const Game: NextPage<Props> = ({ selected_mode }) => {
-  const [color, setColor] = useState<Color>(),
+  const [color, setColor] = useState<Color>(new Color()),
     [streak, setStreak] = useState(0),
     [previousStreak, setPreviousStreak] = useState(0),
     [guessedCorrectly, setGuessedCorrectly] = useState<number>(),
@@ -25,9 +26,9 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
     [error, setError] = useState<string>(),
     [marginOfError, setMarginOfError] = useState(-1), // percent error
     [difficultyName, setDifficultyName] = useState<string>(),
-    [useLight, setUseLight] = useState(true),
+    [useLight, setUseLight] = useState({ ui: true, card: true }),
     [totalInaccuracy, setTotalInaccuracy] = useState(0),
-    [mode, setMode] = useState<"hex" | "RGB">(),
+    [mode, setMode] = useState<mode>(),
     guess_r = useRef<HTMLInputElement>(null),
     guess_g = useRef<HTMLInputElement>(null),
     guess_b = useRef<HTMLInputElement>(null),
@@ -57,9 +58,11 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
     setGuessedCorrectly(-1);
     const c = new Color();
     setColor(c);
-    c.r * 0.299 + c.g * 0.587 + c.b * 0.114 < 150
-      ? setUseLight(true)
-      : setUseLight(false);
+    const useLightUI = Color.useLight(c);
+    const useLightCard = Color.useLight(
+      Color.applyOpacity(c, useLightUI ? 0.2 : 0.6)
+    );
+    setUseLight({ ui: useLightUI, card: useLightCard });
   };
 
   // make sure it is a valid hex, and not just a bunch of random characters
@@ -136,7 +139,12 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
     const guessedColor = getGuessedColor();
     return (
       guessedColor &&
-      mode && <ColorCard color={guessedColor} type={mode} className="ml-3" />
+      mode && (
+        <ColorCard
+          color1={{ color, type: mode }}
+          color2={{ color: guessedColor, type: mode }}
+        />
+      )
     );
   };
 
@@ -146,7 +154,7 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
         <Button
           label="Go Home"
           className={`${
-            useLight || marginOfError === -1
+            useLight.ui || marginOfError === -1
               ? "btn-primary-light"
               : "btn-primary-dark"
           } rounded-full`}
@@ -196,11 +204,14 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
           className={"flex items-center justify-center flex-col h-full w-full "}
           style={{
             backgroundColor: `rgb(${color?.r}, ${color?.g}, ${color?.b})`,
-            color: useLight ? "#fff" : "#111827",
           }}
         >
           {guessedCorrectly == -1 && (
-            <>
+            <div
+              style={{
+                color: useLight.ui ? "#fff" : "#111827",
+              }}
+            >
               <h1 className="text-4xl font-bold mb-5 text-center">
                 What is the {mode} value?
               </h1>
@@ -238,7 +249,7 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
                     label="Guess"
                     onClick={() => submitGuess}
                     className={`${
-                      useLight ? "btn-primary-light" : "btn-primary-dark"
+                      useLight.ui ? "btn-primary-light" : "btn-primary-dark"
                     } mt-3 sm:mt-0`}
                   />
                 </form>
@@ -262,15 +273,20 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
                     label="Guess"
                     onClick={() => submitGuess}
                     className={`${
-                      useLight ? "btn-primary-light" : "btn-primary-dark"
+                      useLight.ui ? "btn-primary-light" : "btn-primary-dark"
                     } mt-3 sm:mt-0`}
                   />
                 </form>
               )}
-            </>
+            </div>
           )}
           {guessedCorrectly !== -1 && (
-            <div className="flex flex-col items-center mb-3">
+            <div
+              className={`flex flex-col items-center mb-3 p-10 md:p-16 rounded-lg bg-black/60`}
+              style={{
+                color: useLight.card ? "#fff" : "#111827",
+              }}
+            >
               <h2 className="text-5xl font-bold mb-5">
                 {guessedCorrectly === 1 ? "Correct!" : "Wrong!"}
               </h2>
@@ -292,12 +308,9 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
                   {mode === "hex" && getGuessedColor()?.toHexString()}
                 </span>
               </h3>
-              <div className="flex my-4">
-                {color && mode && (
-                  <ColorCard color={color} type={mode} className="mr-3" />
-                )}
-                {renderGuessedColor()}
-              </div>
+              {percentError !== 0 && (
+                <div className="flex my-4">{renderGuessedColor()}</div>
+              )}
               {guessedCorrectly === 0 && previousStreak > 0 && (
                 <>
                   <h3 className="text-2xl mb-3">
@@ -316,13 +329,18 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
                 label="Next Color"
                 onClick={setRandomColor}
                 className={`${
-                  useLight ? "btn-primary-light" : "btn-primary-dark"
-                } rounded-full mt-3`}
+                  useLight.card ? "btn-primary-light" : "btn-primary-dark"
+                } rounded-full mt-4`}
               />
             </div>
           )}
           {error && <h3 className="text-2xl font-bold">{error}</h3>}
-          <div className="absolute bottom-20 flex flex-col items-center">
+          <div
+            className="absolute bottom-10 flex flex-col items-center"
+            style={{
+              color: useLight.ui ? "#fff" : "#111827",
+            }}
+          >
             <h2 className="text-3xl font-bold mb-1">Streak: {streak}</h2>
             <h2 className="text-2xl mb-1">Difficulty: {difficultyName}</h2>
             <h4 className="text-xl font-light">
