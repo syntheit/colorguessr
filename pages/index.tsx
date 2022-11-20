@@ -9,7 +9,7 @@ import { index } from "../constants/metadata";
 type Props = {};
 
 const Home: NextPage<Props> = () => {
-  const [selectedMode, setSelectedMode] = useState<string>();
+  const [selectedMode, setSelectedMode] = useState<"hex" | "RGB">();
 
   return (
     <div className="flex items-center justify-center h-full gradientAnimation">
