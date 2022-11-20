@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { FormEvent, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "../Button/Button";
-import { difficulties } from "../../constants/rgb_difficulties";
+import { difficulties } from "../../constants/difficulties";
 import { Color } from "../../constants/Color";
 import {
   modeDisplayNames,
@@ -98,7 +98,7 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
       setError("Error getting guessed color");
       return;
     }
-    const errorPercentage = color.equalsWithinError(guessed_color);
+    const errorPercentage = color.percentDifference(guessed_color);
     if (errorPercentage <= marginOfError) {
       setGuessedCorrectly(1);
       setPreviousStreak(streak + 1);
