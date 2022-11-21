@@ -9,13 +9,17 @@ import {
 } from "../../constants/modeDisplayNames";
 import { ColorCard } from "../ColorCard/ColorCard";
 import { mode } from "../../constants/types";
+import { NextSeo } from "next-seo";
+import { game_hex, game_rgb } from "../../constants/metadata";
 
 type Props = {
   selected_mode: mode;
 };
 
 // add multiple choice
-// diagonal practice round where you can live guess the colors
+// consider making game (and mode) a separate page
+// would be nice if people want to send a direct gamemode to somebody,
+// and would be good for SEO too
 
 export const Game: NextPage<Props> = ({ selected_mode }) => {
   const [color, setColor] = useState<Color>(new Color(-1)),
@@ -145,6 +149,11 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
 
   return (
     <div className="flex flex-col h-full w-full items-center justify-center">
+      {mode && mode === "hex" ? (
+        <NextSeo {...game_hex} />
+      ) : (
+        <NextSeo {...game_rgb} />
+      )}
       <div className="absolute top-5">
         <Button
           label="Go Home"

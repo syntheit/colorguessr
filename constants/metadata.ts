@@ -36,6 +36,42 @@ export const index = {
   additionalLinkTags,
 };
 
+export const practice = {
+  title: "Practice | ColorGuessr",
+  description: "Practice your color guessing skills",
+  openGraph: {
+    url: "https://www.colorguessr.matv.io/practice",
+    title: "Practice | ColorGuessr",
+    description: "Practice your color guessing skills",
+    site_name: "ColorGuessr",
+  },
+  additionalLinkTags,
+};
+
+export const game_hex = {
+  title: "Guess the hex | ColorGuessr",
+  description: "Guess the hex color displayed on screen",
+  openGraph: {
+    url: "https://www.colorguessr.matv.io",
+    title: "Guess the hex | ColorGuessr",
+    description: "Guess the hex color displayed on screen",
+    site_name: "ColorGuessr",
+  },
+  additionalLinkTags,
+};
+
+export const game_rgb = {
+  title: "Guess the RGB | ColorGuessr",
+  description: "Guess the RGB color displayed on screen",
+  openGraph: {
+    url: "https://www.colorguessr.matv.io",
+    title: "Guess the RGB | ColorGuessr",
+    description: "Guess the RGB color displayed on screen",
+    site_name: "ColorGuessr",
+  },
+  additionalLinkTags,
+};
+
 export const four04 = {
   title: "404 | ColorGuessr",
   description,
