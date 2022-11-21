@@ -47,9 +47,15 @@ html,
   }
 
   .input-primary::-webkit-outer-spin-button,
-  .input-primary::-webkit-inner-spin-button {
+  .input-primary::-webkit-inner-spin-button,
+  .input-practice::-webkit-outer-spin-button,
+  .input-practice::-webkit-inner-spin-button {
     appearance: none;
     margin: 0;
+  }
+
+  .input-practice {
+    @apply text-gray-100 placeholder:text-gray-400 text-5xl font-medium m-3 p-2 rounded-md h-28 bg-gray-900/70 w-72;
   }
 
   .gradientAnimation {
