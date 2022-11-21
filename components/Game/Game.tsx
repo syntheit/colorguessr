@@ -18,7 +18,7 @@ type Props = {
 // diagonal practice round where you can live guess the colors
 
 export const Game: NextPage<Props> = ({ selected_mode }) => {
-  const [color, setColor] = useState<Color>(new Color()),
+  const [color, setColor] = useState<Color>(new Color(-1)),
     [streak, setStreak] = useState(0),
     [previousStreak, setPreviousStreak] = useState(0),
     [guessedCorrectly, setGuessedCorrectly] = useState<number>(),
@@ -93,14 +93,11 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
     }
     setError("");
     const guessed_color_1 = getGuessedColor();
-    let guessed_color: Color;
-    if (guessed_color_1) {
-      guessed_color = guessed_color_1;
-    } else {
+    if (!guessed_color_1) {
       setError("Error getting guessed color");
       return;
     }
-    const errorPercentage = color.percentDifference(guessed_color);
+    const errorPercentage = color.percentDifference(guessed_color_1);
     if (errorPercentage <= marginOfError) {
       setGuessedCorrectly(1);
       setPreviousStreak(streak + 1);
