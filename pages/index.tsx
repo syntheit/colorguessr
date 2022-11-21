@@ -33,6 +33,11 @@ const Home: NextPage<Props> = () => {
               onClick={() => setSelectedMode("RGB")}
               className="m-4"
             />
+            <Button
+              label="Practice"
+              href="/practice"
+              className="m-4"
+            />
           </div>
           <Link href="https://www.github.com/syntheit/colorguessr">
             <svg className="w-14 h-14 text-white hoverOpacity mb-4">
