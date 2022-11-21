@@ -52,6 +52,13 @@ export class Color {
     return c.r * 0.299 + c.g * 0.587 + c.b * 0.114 < 150 ? true : false;
   };
 
+  public static avg = (c1: Color, c2: Color) => {
+    const r = Math.round((c1.r + c2.r) / 2),
+      g = Math.round((c1.g + c2.g) / 2),
+      b = Math.round((c1.b + c2.b) / 2);
+    return new Color({ r, g, b });
+  };
+
   private randomColorVal = () => {
     return Math.floor(Math.random() * 255);
   };
