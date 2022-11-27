@@ -19,24 +19,24 @@ const Home: NextPage<Props> = () => {
       {!selectedMode && (
         <div className="flex items-center flex-col text-white bg-black/60 p-10 md:p-16 rounded-lg mx-10">
           <h1 className="text-fluid-lg font-bold mb-3">ColorGuessr</h1>
-          <p className="text-2xl mb-8 text-center w-10/12">
+          <p className="text-2xl mb-4 md:mb-8 text-center w-10/12">
             Can you the guess hex/rgb of a color just by looking at it?
           </p>
           <div className="flex flex-wrap items-center justify-center mb-12">
             <Button
               label="Guess the hex"
               onClick={() => setSelectedMode("hex")}
-              className="m-4"
+              className="m-3 md:m-4"
             />
             <Button
               label="Guess the RGB"
               onClick={() => setSelectedMode("RGB")}
-              className="m-4"
+              className="m-3 md:m-4"
             />
             <Button
               label="Practice"
               href="/practice"
-              className="m-4"
+              className="m-3 md:m-4"
             />
           </div>
           <Link href="https://www.github.com/syntheit/colorguessr">

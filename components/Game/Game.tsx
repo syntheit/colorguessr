@@ -20,6 +20,7 @@ type Props = {
 // consider making game (and mode) a separate page
 // would be nice if people want to send a direct gamemode to somebody,
 // and would be good for SEO too
+// write a hook for enter key instead of implementing it here
 
 export const Game: NextPage<Props> = ({ selected_mode }) => {
   const [color, setColor] = useState<Color>(new Color(-1)),
@@ -205,63 +206,65 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
         </div>
       ) : (
         <div
-          className={"flex items-center justify-center flex-col h-full w-full "}
+          className={"flex items-center justify-center flex-col h-full w-full"}
           style={{
             backgroundColor: `rgb(${color?.r}, ${color?.g}, ${color?.b})`,
           }}
         >
-          {guessedCorrectly == -1 && (
+          {guessedCorrectly === -1 && (
             <div
               style={{
                 color: useLight.card ? "#fff" : "#111827",
               }}
-              className={`bg-black/60 p-10 md:p-16 rounded-lg`}
+              className={`bg-black/60 p-10 md:p-16 rounded-lg w-11/12 md:w-fit`}
             >
-              <h1 className="text-4xl font-bold mb-5 text-center">
+              <h1 className="text-3xl md:text-4xl font-bold mb-5 text-center">
                 What is the {mode} value?
               </h1>
               {mode === "RGB" && (
                 <form
-                  className="flex items-center justify-center mb-3 flex-wrap"
+                  className="flex flex-col items-center justify-center mb-3"
                   onSubmit={(e) => submitGuess(e)}
                 >
-                  <input
-                    type="number"
-                    placeholder="R"
-                    min="0"
-                    max="255"
-                    className="input-primary"
-                    ref={guess_r}
-                    autoFocus
-                  />
-                  <input
-                    type="number"
-                    placeholder="G"
-                    min="0"
-                    max="255"
-                    className="input-primary"
-                    ref={guess_g}
-                  />
-                  <input
-                    type="number"
-                    placeholder="B"
-                    min="0"
-                    max="255"
-                    className="input-primary"
-                    ref={guess_b}
-                  />
+                  <div className="flex flex-wrap items-center justify-center">
+                    <input
+                      type="number"
+                      placeholder="R"
+                      min="0"
+                      max="255"
+                      className="input-primary"
+                      ref={guess_r}
+                      autoFocus
+                    />
+                    <input
+                      type="number"
+                      placeholder="G"
+                      min="0"
+                      max="255"
+                      className="input-primary"
+                      ref={guess_g}
+                    />
+                    <input
+                      type="number"
+                      placeholder="B"
+                      min="0"
+                      max="255"
+                      className="input-primary"
+                      ref={guess_b}
+                    />
+                  </div>
                   <Button
                     label="Guess"
                     onClick={() => submitGuess}
                     className={`${
                       useLight.card ? "btn-primary-light" : "btn-primary-dark"
-                    } mt-3 sm:mt-0`}
+                    } mt-3`}
                   />
                 </form>
               )}
               {mode === "hex" && (
                 <form
-                  className="flex items-center justify-center mb-3 flex-wrap"
+                  className="flex items-center justify-center mb-5 flex-wrap"
                   onSubmit={(e) => submitGuess(e)}
                 >
                   <input
@@ -284,32 +287,32 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
                 </form>
               )}
               {error && (
-                <h3 className="text-2xl font-bold text-center">{error}</h3>
+                <h3 className="text-2xl font-bold text-center mt-5">{error}</h3>
               )}
             </div>
           )}
           {guessedCorrectly !== -1 && (
             <div
-              className={`flex flex-col items-center mb-3 p-10 md:p-16 rounded-lg bg-black/60`}
+              className={`flex flex-col justify-center items-center mb-3 p-10 md:p-16 rounded-lg w-11/12 md:w-fit bg-black/60`}
               style={{
                 color: useLight.card ? "#fff" : "#111827",
               }}
             >
-              <h2 className="text-5xl font-bold mb-5">
+              <h2 className="text-4xl md:text-5xl font-bold mb-5">
                 {guessedCorrectly === 1 ? "Correct!" : "Wrong!"}
               </h2>
-              <h3 className="text-2xl mb-3">
+              <h3 className="text-xl md:text-2xl mb-3">
                 You were off by&nbsp;
                 <span className="font-bold">{percentError}%</span>
               </h3>
-              <h3 className="text-2xl mb-3">
-                The color was&nbsp;
+              <h3 className="text-xl md:text-2xl mb-3 text-center">
+                The color was&nbsp;{mode === "RGB" && <br></br>}
                 <span className="font-bold">
                   {mode === "RGB" && color?.toRGBString()}
                   {mode === "hex" && color?.toHexString()}
                 </span>
               </h3>
-              <h3 className="text-2xl mb-3">
+              <h3 className="text-xl md:text-2xl mb-3">
                 You guessed&nbsp;
                 <span className="font-bold">
                   {mode === "RGB" && getGuessedColor()?.toRGBString()}
@@ -343,16 +346,28 @@ export const Game: NextPage<Props> = ({ selected_mode }) => {
             </div>
           )}
           <div
-            className="absolute bottom-10 flex flex-col items-center"
+            className="absolute bottom-8 md:bottom-10 flex flex-col items-center justify-end h-20"
             style={{
               color: useLight.ui ? "#fff" : "#111827",
             }}
           >
-            <h2 className="text-3xl font-bold mb-1">Streak: {streak}</h2>
-            <h2 className="text-2xl mb-1">Difficulty: {difficultyName}</h2>
-            <h4 className="text-xl font-light">
-              Mode: {modeDisplayNames[mode as keyof modeDisplayNamesType]}
-            </h4>
+            <h2 className="text-2xl md:text-3xl font-bold mb-1">
+              Streak: {streak}
+            </h2>
+            <div className="flex md:flex-col justify-center items-center">
+              <h2 className="text-lg font-light md:text-2xl mx-2 md:mx-0 md:mb-1">
+                Difficulty: {difficultyName}
+              </h2>
+              <div
+                className="md:hidden w-[2px] h-4/6 flex rounded"
+                style={{
+                  backgroundColor: useLight.ui ? "#fff" : "#111827",
+                }}
+              ></div>
+              <h4 className="text-lg md:text-xl font-light mx-2 md:mx-0">
+                Mode: {modeDisplayNames[mode as keyof modeDisplayNamesType]}
+              </h4>
+            </div>
           </div>
         </div>
       )}
