@@ -7,7 +7,7 @@ import { ThemeToggle } from "~/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "ColorGuessr",
-  description: "Test your color perception skills! Can you guess the hex/rgb values of colors just by looking at them? Challenge yourself with our color guessing game.",
+  description: "Test color perception skills! Guess the hex/rgb values of colors just by looking at them. Challenge color perception with this interactive color guessing game.",
   authors: [{ name: "Daniel Miller" }],
   creator: "Daniel Miller",
   formatDetection: {
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "ColorGuessr - Test Your Color Perception",
-    description: "Challenge your color perception skills with our interactive color guessing game. Guess hex and RGB values just by looking at colors!",
+    description: "Challenge color perception skills with this interactive color guessing game. Guess hex and RGB values just by looking at colors!",
     url: "https://colorguessr.com",
     siteName: "ColorGuessr",
     images: [
@@ -38,9 +38,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ColorGuessr - Test Your Color Perception",
-    description: "Challenge your color perception skills with our interactive color guessing game. Guess hex and RGB values just by looking at colors!",
+    description: "Challenge color perception skills with this interactive color guessing game. Guess hex and RGB values just by looking at colors!",
     images: ["/og-image.png"],
-    creator: "@danielmiller",
   },
   robots: {
     index: true,
